@@ -26,7 +26,7 @@ exports.isAuthenticated = (req, res, next) => {
       return res.status(401).send("Invalid credentials");
     }
     try{
-        const body = jwt.verify(req.headers.authorization, process.env.SECRET);
+        const body = jwt.verify(req.headers.authorization.replace("Bearer ", ""), process.env.SECRET);
         console.log(body)
         req.user = body;
         next()
@@ -34,6 +34,5 @@ exports.isAuthenticated = (req, res, next) => {
     catch{
       res.status(401).send("UnAuthorized Access!")
     }
-    console.log(body);
   }
   

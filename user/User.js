@@ -43,7 +43,7 @@ class UserClass {
   }
 
   signData(data) {
-    if (data.length === 0 || this.isBroadCaster === false) {
+    if (!Boolean(data) || this.isBroadCaster === false) {
       throw TypeError("Invalid data or access");
     }
     const signature = crypto.sign("SHA256", Buffer.from(data), {

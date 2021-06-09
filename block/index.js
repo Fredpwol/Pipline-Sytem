@@ -24,9 +24,8 @@ router.post("/broadcast", isAuthenticated ,async (req, res) => {
           });
         } else {
             // update invalid chain to the longest valid chain
-            await user.update({$set: {
-              chain: longestChain
-            }});
+            user.set({chain: longestChain});
+            await user.save()
             await user.update({
               $push: {
                 chain: block,
