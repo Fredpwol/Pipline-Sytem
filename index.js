@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use("/users", userRoute);
-app.use("/block", blockRoute);
+app.use("/blocks", blockRoute);
 
 const GENESIS_BLOCK = {
   previousBlockHash: "omega",
@@ -22,6 +22,7 @@ const GENESIS_BLOCK = {
   pressure: 0.0,
   signature: "",
   density: 0.0,
+  broadcaster:"NULL",
   timestamp: Date.now(),
 };
 
@@ -59,8 +60,8 @@ app.post("/register", async (req, res) => {
     } else {
       const parsedUser = await unParsedUser.save();
       const token = jwt.sign({ _id: parsedUser._id }, process.env.SECRET);
-      const users = await User.find({});
-      if (!users.length === 0) {
+      const users = await User.find({isBroadCaster:false});
+      if (!((users.length - 1) === 0)) {
         // assigns the longest valid chain to the user or a chain with the gensis block if no user is found.
         const longestChain = await longestValidChain();
         parsedUser.set({ chain: longestChain });
