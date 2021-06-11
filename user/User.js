@@ -11,7 +11,7 @@ const UserSchema = mongoose.Schema({
   email: {
     type: String,
     requried: true,
-    unique:true
+    unique: true,
   },
   password: {
     type: String,
@@ -19,7 +19,11 @@ const UserSchema = mongoose.Schema({
     min: 6,
   },
   isVerified: Boolean,
-  publicKey: String,
+  publicKey: {
+    type: String,
+    requried: true,
+    default: "",
+  },
   privateKey: String,
   isBroadCaster: {
     type: Boolean,
@@ -33,8 +37,12 @@ class UserClass {
     // start looping from index 1 to avoid verifying the gensis block
     for (var i = 1; i < this.chain.length; i++) {
       if (
-        !this.verifyData(this.chain[i].serializeBlock, this.chain[i].signature) ||
-        this.chain[i].previousHash !== this.chain[i - 1].hash
+        !this.verifyData(
+          this.chain[i].serializeBlock,
+          this.chain[i].signature,
+          this.chain[i].broadcaster
+        ) ||
+        this.chain[i].previousBlockHash !== this.chain[i - 1].hash
       ) {
         return false;
       }
@@ -54,15 +62,16 @@ class UserClass {
     return signature.toString("base64");
   }
 
-  verifyData(data, signature) {
-    if (data.length === 0 || this.isBroadCaster === false) {
+  verifyData(data, signature, publicKey) {
+    if (data.length === 0 || this.isBroadCaster === true) {
       throw TypeError("Invalid data or access");
     }
+
     return crypto.verify(
       "SHA256",
       Buffer.from(data),
       {
-        key: this.publicKey,
+        key: publicKey,
         padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
         passphrase: process.env.SECRET,
       },
