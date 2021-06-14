@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,7 +12,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
+import { authContext } from "../../contexts/AuthContext";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,7 +37,39 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState("");
+  const [remember, setRemember] = useState(false);
+  const auth = useContext(authContext);
+  const history = useHistory();
 
+  const submit = () => {
+    fetch("http://localhost:5000/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password, organization }),
+      headers: new Headers({ "Content-Type": "application/json" }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status == "error") {
+          setErrors(data.message);
+          return;
+        }
+        auth.setEmail(email);
+        auth.setToken(data.token);
+        console.log(data.token);
+        if (remember) {
+          localStorage.setItem("token", data.token);
+        }
+        history.push("/");
+      })
+      .catch((err) => {
+        console.error(err);
+        setErrors(String(err));
+      });
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -47,14 +80,17 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        <Typography color="error">{errors}</Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-          <Grid item xs={12}>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
                 id="organization"
+                value={organization}
+                onChange={(e) => setOrganization(e.target.value)}
                 label="Organization"
                 name="organization"
               />
@@ -65,6 +101,8 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 label="Email Address"
                 name="email"
                 autoComplete="email"
@@ -79,18 +117,26 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="Remember Me."
+                control={
+                  <Checkbox
+                    value={remember}
+                    color="primary"
+                    onChange={() => setRemember(!remember)}
+                  />
+                }
+                label="Remember me"
               />
             </Grid>
           </Grid>
           <Button
-            type="submit"
+            onClick={submit}
             fullWidth
             variant="contained"
             color="primary"
@@ -100,7 +146,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
