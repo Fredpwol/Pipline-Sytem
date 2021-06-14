@@ -24,6 +24,8 @@ const theme = createMuiTheme({
     },
   },
 });
+
+//block all
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const auth = useContext(authContext);
