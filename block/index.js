@@ -64,6 +64,19 @@ router.post("/broadcast", isAuthenticated, async (req, res) => {
 
 });
 
+router.get("/latest", isAuthenticated, async (req, res) => {
+  const user = await User.findById({ _id: req.user._id });
+  if (!user){
+    return res.status(403).json({status: "error", message:"user not found"})
+  }
+  if (user.chain.length > 1){
+    res.status(200).json({ status: "ok", block:user.chain[user.chain.length-1]})
+  }
+  else{
+    res.status(200).json({status: "ok", block:{}})
+  }
+})
+
 router.get("/", isAuthenticated, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
   res.status(200).json(user.chain);
