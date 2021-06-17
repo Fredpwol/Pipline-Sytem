@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import "./styles/App.css";
 import SignUp from "./pages/auth/SignUp";
 import Home from "./pages/Home";
+import BlockList from "./pages/BlockList";
 import Copyright from "./components/Copyright";
 
 import { Box } from "@material-ui/core";
@@ -13,6 +14,7 @@ import cyan from "@material-ui/core/colors/cyan";
 import SignIn from "./pages/auth/Login";
 import { authContext } from "./contexts/AuthContext";
 import NavBar from "./components/NavBar";
+import ErrorPage from "./pages/404";
 
 const theme = createMuiTheme({
   palette: {
@@ -25,9 +27,23 @@ const theme = createMuiTheme({
   },
 });
 
+
+function PrivateRoute ({component: Component, authed, ...rest}) {
+  console.log(authed)
+  return (
+    <Route
+      {...rest}
+      exact 
+      render={(props) => authed
+        ? <Component {...props} />
+        : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
+    />
+  )
+}
+
 //block all
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const auth = useContext(authContext);
   useEffect(() => {
     setIsAuthenticated(Boolean(auth.token));
@@ -36,18 +52,14 @@ function App() {
     <ThemeProvider theme={theme}>
       <NavBar />
       <div className="body">
-        {!isAuthenticated ? (
-          <Switch>
+         <Switch>
+          <PrivateRoute authed={isAuthenticated} exact path="/" component={Home} />
+            <PrivateRoute authed={isAuthenticated} path="/blocks" component={BlockList} />
             <Route path="/login" component={SignIn} />
             <Route path="/signup" component={SignUp} />
-            <Route render={() => <Redirect to="/login" />} />
+            <Route path="*" component={ErrorPage} />
+            {/* <Route render={() => <Redirect to="/login" />} /> */}
           </Switch>
-        ) : (
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route render={() => <Redirect to="/" />} />
-          </Switch>
-        )}
       </div>
       <Box mt={5}>
         <Copyright />
