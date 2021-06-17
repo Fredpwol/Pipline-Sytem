@@ -15,7 +15,7 @@ const BlockSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  pressure: {
+  flowRate: {
     type: Number,
     required: true,
   },
@@ -48,7 +48,7 @@ class BlockClass {
         PH: this.PH,
         density: this.density,
         temperature: this.temperature,
-        pressure: this.pressure
+        flowRate: this.flowRate
      }).sort()
     );
   }
