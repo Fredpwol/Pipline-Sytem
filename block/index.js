@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/broadcast", isAuthenticated, async (req, res) => {
   // validattion later
-  try{
+  try {
     const broadcaster = await User.findOne({ _id: req.user._id });
     if (broadcaster) {
       if (broadcaster.isBroadCaster && broadcaster.isVerified) {
@@ -15,7 +15,7 @@ router.post("/broadcast", isAuthenticated, async (req, res) => {
         const longestChain = await longestValidChain();
         const block = req.body;
         block.broadcaster = broadcaster.publicKey;
-        console.log(longestChain)
+        console.log(longestChain);
         const previousHash = longestChain[longestChain.length - 1].hash;
         block.previousBlockHash = previousHash;
         const data = JSON.stringify(
@@ -24,10 +24,10 @@ router.post("/broadcast", isAuthenticated, async (req, res) => {
             PH: block.PH,
             density: block.density,
             temperature: block.temperature,
-            pressure: block.pressure,
+            flowRate: block.flowRate,
           }).sort()
-        )
-        console.log(data)
+        );
+        console.log(data);
         block.signature = broadcaster.signData(data);
         users.forEach(async (user) => {
           if (user.verifyChain() && user.chain.length === longestChain.length) {
@@ -57,29 +57,47 @@ router.post("/broadcast", isAuthenticated, async (req, res) => {
     } else {
       res.status(401).json({ status: "error", message: "Unauthorized Access" });
     }
-  }catch(e){
-    console.error(e)
-    res.status(400).send({message: String(e)})
+  } catch (e) {
+    console.error(e);
+    res.status(400).send({ message: String(e) });
   }
-
 });
 
 router.get("/latest", isAuthenticated, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
-  if (!user){
-    return res.status(403).json({status: "error", message:"user not found"})
+  if (!user) {
+    return res.status(403).json({ status: "error", message: "user not found" });
   }
-  if (user.chain.length > 1){
-    res.status(200).json({ status: "ok", block:user.chain[user.chain.length-1]})
+  if (user.chain.length > 1) {
+    res
+      .status(200)
+      .json({ status: "ok", block: user.chain[user.chain.length - 1] });
+  } else {
+    res.status(200).json({ status: "ok", block: {} });
   }
-  else{
-    res.status(200).json({status: "ok", block:{}})
-  }
-})
+});
 
 router.get("/", isAuthenticated, async (req, res) => {
   const user = await User.findById({ _id: req.user._id });
-  res.status(200).json(user.chain);
+  if (!user) {
+    return res.status(403).json({ status: "error", message: "user not found" });
+  }
+  res.status(200).json({ status: "ok", blocks: user.chain.reverse() });
+});
+
+router.get("/:_id", isAuthenticated, async (req, res) => {
+  const user = await User.findById({ _id: req.user._id });
+  if (!user) {
+    return res.status(403).json({ status: "error", message: "user not found" });
+  }
+
+  const block = user.chain.filter((data) => data._id == req.params._id);
+  if (block.length < 1) {
+    return res
+      .status(404)
+      .json({ status: "error", message: "Block not found" });
+  }
+  res.status(200).json({ status: "ok", block: block[0] });
 });
 
 module.exports = router;
