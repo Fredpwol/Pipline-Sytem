@@ -6,11 +6,10 @@ export const authContext = React.createContext();
 const AuthProvider = ({ children }) => {
   const [organization, setOrganization] = useState("");
   const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const history = useHistory()
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"))
     setEmail(localStorage.getItem("email") || "");
     setOrganization(localStorage.getItem("org") || "");
   },[])
