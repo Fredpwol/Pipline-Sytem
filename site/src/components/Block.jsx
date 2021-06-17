@@ -41,8 +41,8 @@ export default function Block({ title, block }) {
     const classes = useStyles()
   return (
     <div align="center" className={classes.container}>
+    <Typography color="primary">{title}</Typography>
       <Table className={classes.table}>
-        <Typography color="primary">{title}</Typography>
         <TableBody>
           {Object.entries(block).map((row) => (
             <StyledTableRow key={row[0]}>
@@ -59,7 +59,7 @@ export default function Block({ title, block }) {
                 {row[1]}{" "}
                 {row[0].toLowerCase() === "temperature"
                   ? "°C"
-                  : row[0].toLowerCase() === "pressure"
+                  : row[0].toLowerCase() === "flowrate"
                   ? "m³/s"
                   : null}
               </StyledTableCell>
