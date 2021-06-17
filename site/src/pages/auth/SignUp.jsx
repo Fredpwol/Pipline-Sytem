@@ -7,7 +7,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
+// import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -42,33 +42,38 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState("");
   const [remember, setRemember] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const auth = useContext(authContext);
   const history = useHistory();
 
   const submit = () => {
-    fetch("http://localhost:5000/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password, organization }),
-      headers: new Headers({ "Content-Type": "application/json" }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status == "error") {
-          setErrors(data.message);
-          return;
-        }
-        auth.setEmail(email);
-        auth.setToken(data.token);
-        console.log(data.token);
-        if (remember) {
-          localStorage.setItem("token", data.token);
-        }
-        history.push("/");
+    if (password === confirmPassword) {
+      fetch("http://localhost:5000/register", {
+        method: "POST",
+        body: JSON.stringify({ email, password, organization }),
+        headers: new Headers({ "Content-Type": "application/json" }),
       })
-      .catch((err) => {
-        console.error(err);
-        setErrors(String(err));
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status == "error") {
+            setErrors(data.message);
+            return;
+          }
+          auth.setEmail(email);
+          auth.setToken(data.token);
+          console.log(data.token);
+          if (remember) {
+            localStorage.setItem("token", data.token);
+          }
+          history.push("/");
+        })
+        .catch((err) => {
+          console.error(err);
+          setErrors(String(err));
+        });
+    } else {
+      setErrors("Please confirm your password");
+    }
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -120,6 +125,19 @@ export default function SignUp() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirm-password"
+                label="Confirm Password"
+                type="password"
+                id="confirm-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
