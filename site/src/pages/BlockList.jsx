@@ -78,7 +78,7 @@ export default function CustomizedTables() {
             <TableRow>
               <StyledTableCell>_id</StyledTableCell>
               <StyledTableCell>Time added</StyledTableCell>
-              <StyledTableCell align="right">Pressure</StyledTableCell>
+              <StyledTableCell align="right">Flow Rate</StyledTableCell>
               <StyledTableCell align="right">Temeperature</StyledTableCell>
               <StyledTableCell align="right">Density</StyledTableCell>
               <StyledTableCell align="right">PH</StyledTableCell>
@@ -87,13 +87,13 @@ export default function CustomizedTables() {
           <TableBody>
             {blocks.map((row) => (
               <StyledTableRow key={row._id}>
-                <Link>
+                <Link to={`/blocks/${row._id}`}>
                 <StyledTableCell component="th" scope="row" style={{color:"blue"}}>
                   {row._id}
                 </StyledTableCell>
                 </Link>
                 <StyledTableCell>{new Date(row.timestamp).toLocaleString()}</StyledTableCell>
-                <StyledTableCell align="right">{row.pressure}</StyledTableCell>
+                <StyledTableCell align="right">{row.flowRate}</StyledTableCell>
                 <StyledTableCell align="right">{row.temperature}</StyledTableCell>
                 <StyledTableCell align="right">{row.density}</StyledTableCell>
                 <StyledTableCell align="right">{row.PH}</StyledTableCell>
