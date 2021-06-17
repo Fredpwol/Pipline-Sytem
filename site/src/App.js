@@ -15,6 +15,7 @@ import SignIn from "./pages/auth/Login";
 import { authContext } from "./contexts/AuthContext";
 import NavBar from "./components/NavBar";
 import ErrorPage from "./pages/404";
+import BlockDisplay from "./pages/BlockDisplay";
 
 const theme = createMuiTheme({
   palette: {
@@ -54,7 +55,8 @@ function App() {
       <div className="body">
          <Switch>
           <PrivateRoute authed={isAuthenticated} exact path="/" component={Home} />
-            <PrivateRoute authed={isAuthenticated} path="/blocks" component={BlockList} />
+            <PrivateRoute authed={isAuthenticated} exact path="/blocks" component={BlockList} />
+            <PrivateRoute authed={isAuthenticated} path="/blocks/:_id" component={BlockDisplay}  />
             <Route path="/login" component={SignIn} />
             <Route path="/signup" component={SignUp} />
             <Route path="*" component={ErrorPage} />
