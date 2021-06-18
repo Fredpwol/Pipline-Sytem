@@ -34,7 +34,7 @@ export default function BasicTable() {
         }
       })
       .catch((err) => setErrors(String(err)));
-  }, []);
+  }, [auth.token]);
 
   return (
     <div className={classes.content}>

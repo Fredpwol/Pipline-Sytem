@@ -56,7 +56,7 @@ export default function SignUp() {
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.status == "error") {
+          if (data.status === "error") {
             setErrors(data.message);
             return;
           }
