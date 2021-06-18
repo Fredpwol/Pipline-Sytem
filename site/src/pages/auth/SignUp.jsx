@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { authContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router";
+import { API_URL } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -48,7 +49,7 @@ export default function SignUp() {
 
   const submit = () => {
     if (password === confirmPassword) {
-      fetch("http://localhost:5000/register", {
+      fetch(`${API_URL}/register`, {
         method: "POST",
         body: JSON.stringify({ email, password, organization }),
         headers: new Headers({ "Content-Type": "application/json" }),

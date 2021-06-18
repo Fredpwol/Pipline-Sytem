@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { authContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router";
+import { API_URL } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -45,7 +46,7 @@ export default function SignIn() {
   const history = useHistory()
 
   const submit = () => {
-    fetch("http://localhost:5000/login", {
+    fetch(`${API_URL}/login`, {
       method: "POST",
       body: JSON.stringify({ email, password }),
       headers: new Headers({"Content-Type": "application/json"}),

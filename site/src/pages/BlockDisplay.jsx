@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import Block from "../components/Block";
 import { authContext } from "../contexts/AuthContext";
 import { makeStyles } from "@material-ui/core/styles";
+import { API_URL } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -23,7 +24,7 @@ export default function BlockDisplay(){
  
 
  useEffect(() => {
-    Boolean(_id) && (fetch(`/blocks/${_id}`, {
+    Boolean(_id) && (fetch(`${API_URL}/blocks/${_id}`, {
       headers: new Headers({ Authorization: `Bearer ${auth.token}` }),
     })
       .then((res) => res.json())

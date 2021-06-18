@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 import { authContext } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../utils';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -47,7 +48,7 @@ export default function CustomizedTables() {
   const auth = useContext(authContext);
   
   useEffect(() => {
-    fetch(`http://localhost:5000/blocks`, {
+    fetch(`${API_URL}/blocks`, {
       headers: new Headers({ Authorization: `Bearer ${auth.token}` }),
     })
       .then((res) => res.json())

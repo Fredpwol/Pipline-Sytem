@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core';
 import { authContext } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import Block from "../components/Block";
+import { API_URL } from "../utils";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -21,7 +22,7 @@ export default function BasicTable() {
   const [errors, setErrors] = useState("");
 
   useEffect(() => {
-    fetch(`/blocks/latest`, {
+    fetch(`${API_URL}/blocks/latest`, {
       headers: new Headers({ Authorization: `Bearer ${auth.token}` }),
     })
       .then((res) => res.json())
