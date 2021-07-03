@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../user/User");
+const { Block } = require("./Block");
 const { longestValidChain, isAuthenticated } = require("../utils");
 
 const router = express.Router();
@@ -78,11 +79,18 @@ router.get("/latest", isAuthenticated, async (req, res) => {
 });
 
 router.get("/", isAuthenticated, async (req, res) => {
-  const user = await User.findById({ _id: req.user._id });
-  if (!user) {
-    return res.status(403).json({ status: "error", message: "user not found" });
+  try{
+    const user = await User.findById({ _id: req.user._id });
+    if (!user) {
+      return res.status(403).json({ status: "error", message: "user not found" });
+    }
+    res.status(200).json({ status: "ok", blocks: user.chain.reverse() });
+  }catch(err)
+  {
+    console.error(err)
+    res.status(400).json({status:"error", message:String(err)})
   }
-  res.status(200).json({ status: "ok", blocks: user.chain.reverse() });
+
 });
 
 router.get("/:_id", isAuthenticated, async (req, res) => {
@@ -99,5 +107,21 @@ router.get("/:_id", isAuthenticated, async (req, res) => {
   }
   res.status(200).json({ status: "ok", block: block[0] });
 });
+
+router.get("/timeline/:field", isAuthenticated , async (req, res) => {
+  const { field } = req.params;
+  const aceptableFields = ["ph", "temperature", "flowrate", "density"]
+  if(!aceptableFields.includes(field.toLowerCase())){
+    return res.status(400).json({status:"error", message:"Sorry enter a valid field!"})
+  }
+  try{
+    const user = await User.findById({_id: req.user._id})
+    const data = user.chain.map(block => block[field])
+    res.status(200).json({status:"success", data })
+  }catch(error)
+  {
+    return res.status(400).json({status: "error", message: String(error)})
+  }
+})
 
 module.exports = router;
