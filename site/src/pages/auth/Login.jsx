@@ -9,6 +9,7 @@ import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
+import Loading from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { authContext } from "../../contexts/AuthContext";
@@ -41,10 +42,12 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState("");
   const [remember, setRemember] = useState(false)
+  const [logining, setLogining] = useState(false);
   const auth = useContext(authContext);
   const history = useHistory()
 
   const submit = () => {
+    setLogining(true)
     fetch(`${API_URL}/login`, {
       method: "POST",
       body: JSON.stringify({ email, password }),
@@ -52,6 +55,7 @@ export default function SignIn() {
     })
       .then((res) => res.json())
       .then((data) => {
+        setLogining(false);
         if (data.status === "error") {
           setErrors(data.message);
           return
@@ -118,7 +122,7 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            {logining ? <Loading color="white" /> : "Login" }        
           </Button>
           <Grid container>
             <Grid item xs>
