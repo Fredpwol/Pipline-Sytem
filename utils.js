@@ -2,13 +2,19 @@ const User = require("./user/User");
 const jwt = require("jsonwebtoken");
 
 exports.longestValidChain = async () => {
-  const count = await User.count({ isBroadCaster: false });
+  const count = await User.count({
+    isBroadCaster: false
+  });
   if (count > 100) {
-    var users = await User.find({ isBroadCaster: false }).limit(
+    var users = await User.find({
+      isBroadCaster: false
+    }).limit(
       Math.floor(count / 2)
     );
   } else {
-    var users = await User.find({ isBroadCaster: false });
+    var users = await User.find({
+      isBroadCaster: false
+    });
   }
   var longestCount = -Infinity;
   var longestChain = [];
@@ -24,18 +30,39 @@ exports.longestValidChain = async () => {
   return longestChain;
 };
 
+function authenticate(token) {
+  return jwt.verify(
+    token,
+    process.env.SECRET
+  );
+}
+
 exports.isAuthenticated = (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).send("Invalid credentials");
   }
   try {
-    const body = jwt.verify(
-      req.headers.authorization.replace("Bearer ", ""),
-      process.env.SECRET
-    );
-    console.log(body);
-    req.user = body;
+    const user = authenticate(req.headers.authorization.replace("Bearer ", ""))
+    req.user = user;
     next();
+  } catch {
+    res.status(401).send("UnAuthorized Access!");
+  }
+};
+
+exports.isBroadCaster = async  (req, res, next) => {
+  try {
+    const user = authenticate(req.query.API_KEY);
+    req.user = user;
+    const broadcaster = await User.findOne({
+      _id: req.user._id
+    });
+    if (broadcaster && broadcaster.isVerified && broadcaster.isBroadCaster) {
+      next();
+    } else {
+      res.status(401).send("Invalid access privilage")
+    }
+
   } catch {
     res.status(401).send("UnAuthorized Access!");
   }
