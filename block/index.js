@@ -6,7 +6,7 @@ const { longestValidChain, isAuthenticated } = require("../utils");
 
 const router = express.Router();
 
-router.post("/broadcast", isAuthenticated, async (req, res) => {
+router.get("/broadcast", isAuthenticated, async (req, res) => {
   // validattion later
   try {
     const broadcaster = await User.findOne({ _id: req.user._id });
@@ -14,7 +14,7 @@ router.post("/broadcast", isAuthenticated, async (req, res) => {
       if (broadcaster.isBroadCaster && broadcaster.isVerified) {
         const users = await User.find({ isBroadCaster: false });
         const longestChain = await longestValidChain();
-        const block = req.body;
+        const block = req.query;
         block.broadcaster = broadcaster.publicKey;
         console.log(longestChain);
         const previousHash = longestChain[longestChain.length - 1].hash;
