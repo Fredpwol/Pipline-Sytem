@@ -36,12 +36,13 @@ class UserClass {
   verifyChain() {
     // start looping from index 1 to avoid verifying the gensis block
     for (var i = 1; i < this.chain.length; i++) {
+      console.log(this.chain)
       if (
-        !this.verifyData(
-          this.chain[i].serializeBlock,
-          this.chain[i].signature,
-          this.chain[i].broadcaster
-        ) ||
+        // !this.verifyData(
+        //   this.chain[i].serializeBlock,
+        //   this.chain[i].signature,
+        //   this.chain[i].broadcaster
+        // ) ||
         this.chain[i].previousBlockHash !== this.chain[i - 1].hash
       ) {
         return false;
