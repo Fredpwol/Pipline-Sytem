@@ -8,20 +8,18 @@ exports.longestValidChain = async () => {
   if (count > 100) {
     var users = await User.find({
       isBroadCaster: false
-    }).limit(
-      Math.floor(count / 2)
-    );
+    }).limit(Math.floor(count / 2));
   } else {
     var users = await User.find({
       isBroadCaster: false
     });
   }
-  var longestCount = -Infinity;
-  var longestChain = [];
+  let longestCount = -Infinity;
+  let longestChain = [];
   // check if half of the user have a valid chain.
   for (var i = 0; i < users.length; i++) {
     var user = users[i];
-    console.log("verified", user.verifyChain())
+    console.log("verified", user.verifyChain());
     if (user.verifyChain() && user.chain.length > longestCount) {
       longestChain = user.chain;
       longestCount = user.chain.length;
@@ -31,10 +29,7 @@ exports.longestValidChain = async () => {
 };
 
 function authenticate(token) {
-  return jwt.verify(
-    token,
-    process.env.SECRET
-  );
+  return jwt.verify(token, process.env.SECRET);
 }
 
 exports.isAuthenticated = (req, res, next) => {
@@ -42,7 +37,7 @@ exports.isAuthenticated = (req, res, next) => {
     return res.status(401).send("Invalid credentials");
   }
   try {
-    const user = authenticate(req.headers.authorization.replace("Bearer ", ""))
+    const user = authenticate(req.headers.authorization.replace("Bearer ", ""));
     req.user = user;
     next();
   } catch {
@@ -50,7 +45,7 @@ exports.isAuthenticated = (req, res, next) => {
   }
 };
 
-exports.isBroadCaster = async  (req, res, next) => {
+exports.isBroadCaster = async (req, res, next) => {
   try {
     const user = authenticate(req.query.API_KEY);
     req.user = user;
@@ -60,10 +55,10 @@ exports.isBroadCaster = async  (req, res, next) => {
     if (broadcaster && broadcaster.isVerified && broadcaster.isBroadCaster) {
       next();
     } else {
-      res.status(401).send("Invalid access privilage")
+      res.status(401).send("Invalid access privilage");
     }
-
-  } catch {
+  } catch (err) {
+    console.log(err)
     res.status(401).send("UnAuthorized Access!");
   }
 };
