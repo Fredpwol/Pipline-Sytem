@@ -7,7 +7,7 @@ const BlockSchema = new mongoose.Schema({
     required: true,
     min: 1,
   },
-  PH: {
+  vibration: {
     type: Number,
     required: true,
   },
@@ -24,10 +24,6 @@ const BlockSchema = new mongoose.Schema({
     required: true,
   },
   signature: String,
-  density: {
-    type: Number,
-    required: true,
-  },
   timestamp: {
     type: Date,
     default: Date.now,
@@ -45,8 +41,7 @@ class BlockClass {
     return JSON.stringify(
       Object.entries({
         previousBlockHash: this.previousBlockHash,
-        PH: this.PH,
-        density: this.density,
+        vibration: this.vibration,
         temperature: this.temperature,
         flowRate: this.flowRate
      }).sort()

@@ -21,8 +21,7 @@ router.get("/broadcast", isBroadCaster, async (req, res) => {
     });
     const longestChain = await longestValidChain();
     const block = {
-      PH: req.query.PH,
-      density: req.query.density,
+      vibration: req.query.vibration,
       temperature: req.query.temperature,
       flowRate: req.query.flowRate,
     };
@@ -33,8 +32,7 @@ router.get("/broadcast", isBroadCaster, async (req, res) => {
     const data = JSON.stringify(
       Object.entries({
         previousBlockHash: block.previousBlockHash,
-        PH: block.PH,
-        density: block.density,
+        vibration: block.vibration,
         temperature: block.temperature,
         flowRate: block.flowRate,
       }).sort()
@@ -72,7 +70,7 @@ router.get("/broadcast", isBroadCaster, async (req, res) => {
 });
 
 router.get("/latest", isAuthenticated, async (req, res) => {
-  try{
+  try {
     const user = await User.findById({
       _id: req.user._id,
     });
@@ -93,11 +91,11 @@ router.get("/latest", isAuthenticated, async (req, res) => {
         block: {},
       });
     }
-  }catch(error){
-    console.error(error)
+  } catch (error) {
+    console.error(error);
     res.status(400).json({
       status: "error",
-      message:String(error),
+      message: String(error),
     });
   }
 });
@@ -150,20 +148,18 @@ router.get("/:_id", isAuthenticated, async (req, res) => {
   });
 });
 
-router.get("/timeline/:field", isAuthenticated, async (req, res) => {
-  const { field } = req.params;
-  const aceptableFields = ["ph", "temperature", "flowrate", "density"];
-  if (!aceptableFields.includes(field.toLowerCase())) {
-    return res.status(400).json({
-      status: "error",
-      message: "Sorry enter a valid field!",
-    });
-  }
+
+router.get("/timeline/all", isAuthenticated, async (req, res) => {
   try {
     const user = await User.findById({
       _id: req.user._id,
     });
-    const data = user.chain.map((block) => block[field]);
+    const data = user.chain.map((block) => ({
+      vibration: block.vibration || 0,
+      timestamp: block.timestamp,
+      temperature: block.temperature || 0,
+      flowRate: block.flowRate || 0,
+    }));
     res.status(200).json({
       status: "success",
       data,
@@ -175,5 +171,35 @@ router.get("/timeline/:field", isAuthenticated, async (req, res) => {
     });
   }
 });
+
+router.get("/timeline/:field", isAuthenticated, async (req, res) => {
+  const { field } = req.params;
+  const aceptableFields = ["vibration", "temperature", "flowrate"];
+  if (!aceptableFields.includes(field.toLowerCase())) {
+    return res.status(400).json({
+      status: "error",
+      message: "Sorry enter a valid field!",
+    });
+  }
+  try {
+    const user = await User.findById({
+      _id: req.user._id,
+    });
+    const data = user.chain.map((block) => ({
+      value: block[field] || 0,
+      timestamp: block.timestamp,
+    }));
+    res.status(200).json({
+      status: "success",
+      data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "error",
+      message: String(error),
+    });
+  }
+});
+
 
 module.exports = router;

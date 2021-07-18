@@ -21,11 +21,10 @@ app.use("/blocks", blockRoute);
 
 const GENESIS_BLOCK = {
   previousBlockHash: "omega",
-  PH: 0.0,
+  vibration: 0.0,
   temperature: 0.0,
   flowRate: 0.0,
   signature: "",
-  density: 0.0,
   broadcaster: "NULL",
   timestamp: Date.now(),
 };
