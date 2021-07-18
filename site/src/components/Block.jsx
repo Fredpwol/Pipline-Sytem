@@ -8,13 +8,12 @@ import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   table: {
-    minWidth: 500,
     width: "70%",
     marginBottom: "50px",
   },
 
   container: {
-    padding: "20px ",
+    padding: "10px ",
     border: "1px solid",
     borderRadius: "15px",
     borderColor: theme.palette.primary.main,
@@ -38,10 +37,10 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 export default function Block({ title, block }) {
-    const classes = useStyles()
+  const classes = useStyles();
   return (
     <div align="center" className={classes.container}>
-    <Typography color="primary">{title}</Typography>
+      <Typography color="primary">{title}</Typography>
       <Table className={classes.table}>
         <TableBody>
           {Object.entries(block).map((row) => (
@@ -60,7 +59,9 @@ export default function Block({ title, block }) {
                 {row[0].toLowerCase() === "temperature"
                   ? "°C"
                   : row[0].toLowerCase() === "flowrate"
-                  ? "m³/s"
+                  ? "Litre/m"
+                  : row[0].toLowerCase() === "vibration"
+                  ? "Hz"
                   : null}
               </StyledTableCell>
             </StyledTableRow>
