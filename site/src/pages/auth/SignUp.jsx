@@ -5,6 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import Loading from "@material-ui/core/CircularProgress";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 // import Box from "@material-ui/core/Box";
@@ -41,6 +42,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [organization, setOrganization] = useState("");
   const [password, setPassword] = useState("");
+  const [logining, setLogining] = useState(false);
   const [errors, setErrors] = useState("");
   const [remember, setRemember] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,6 +51,7 @@ export default function SignUp() {
 
   const submit = () => {
     if (password === confirmPassword) {
+      setLogining(true)
       fetch(`${API_URL}/register`, {
         method: "POST",
         body: JSON.stringify({ email, password, organization }),
@@ -56,6 +59,7 @@ export default function SignUp() {
       })
         .then((res) => res.json())
         .then((data) => {
+          setLogining(false)
           if (data.status === "error") {
             setErrors(data.message);
             return;
@@ -161,7 +165,7 @@ export default function SignUp() {
             color="primary"
             className={classes.submit}
           >
-            Sign Up
+           {logining ? <Loading color="white" /> : "Sign Up"}
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
