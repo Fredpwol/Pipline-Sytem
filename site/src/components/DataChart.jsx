@@ -22,7 +22,7 @@ const useDimension = () => {
     return { height, width }
 }
 
-const DataChart = ({ data }) => {
+const DataChart = ({ data, field, color }) => {
 const { width } = useDimension();
   return (
     <LineChart
@@ -31,9 +31,7 @@ const { width } = useDimension();
       data={data}
       margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
     >
-      <Line type="monotone" dataKey="vibration" stroke="#ffe32e" />
-      <Line type="monotone" dataKey="flowRate" stroke="#e3425f" />
-      <Line type="monotone" dataKey="temperature" stroke="#2ec0ff" />
+      <Line type="monotone" dataKey={field} stroke={color} />
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />

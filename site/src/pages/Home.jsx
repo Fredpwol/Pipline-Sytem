@@ -87,7 +87,12 @@ export default function BasicTable() {
           ) : null}
           <div style={{padding:"20px"}}>
             <h2 align="center">Data Timeline</h2>
-          <DataChart data={timeline} />
+            <h3>Vibration</h3>
+          <DataChart data={timeline} field="vibration" color="#e3425f" />
+          <h3>Temperature</h3>
+          <DataChart data={timeline} field="temperature" color="#2ec0ff" />
+          <h3>Flow Rate</h3>
+          <DataChart data={timeline} field="flowRate" color="#ffe32e" />
           </div>
         </>
       )}
