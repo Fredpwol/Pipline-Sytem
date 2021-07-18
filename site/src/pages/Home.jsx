@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Loading from "@material-ui/core/CircularProgress";
 import Block from "../components/Block";
 import { API_URL } from "../utils";
+import DataChart from "../components/DataChart";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -21,6 +22,7 @@ export default function BasicTable() {
   const auth = useContext(authContext);
   const [block, setBlock] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [timeline, setTimeline] = useState([]);
   const [errors, setErrors] = useState("");
 
   useEffect(() => {
@@ -40,6 +42,20 @@ export default function BasicTable() {
         }
       })
       .catch((err) => setErrors(String(err)));
+      fetch(`${API_URL}/blocks/timeline/all`, {
+        headers: new Headers({ Authorization: `Bearer ${auth.token}` }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          if (data?.status === "error") {
+            // setErrors(data.message);
+          } else {
+            setTimeline(data.data);
+          }
+        })
+      
   }, [auth.token]);
 
   return (
@@ -69,6 +85,10 @@ export default function BasicTable() {
               <Loading />
             </center>
           ) : null}
+          <div style={{padding:"20px"}}>
+            <h2 align="center">Data Timeline</h2>
+          <DataChart data={timeline} />
+          </div>
         </>
       )}
     </div>
