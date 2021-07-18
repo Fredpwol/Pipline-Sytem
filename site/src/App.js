@@ -51,6 +51,7 @@ function App() {
   }, [auth.token]);
   return (
     <ThemeProvider theme={theme}>
+      <div style={{minWidth:500}} >
       <NavBar />
       <div className="body">
          <Switch>
@@ -66,6 +67,7 @@ function App() {
       <Box mt={5}>
         <Copyright />
       </Box>
+      </div>
     </ThemeProvider>
   );
 }
