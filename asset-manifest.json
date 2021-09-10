@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/Pipline-system/static/css/main.d8b817e0.chunk.css",
+    "main.js": "/Pipline-system/static/js/main.3b04a12e.chunk.js",
+    "main.js.map": "/Pipline-system/static/js/main.3b04a12e.chunk.js.map",
+    "runtime-main.js": "/Pipline-system/static/js/runtime-main.a7473a28.js",
+    "runtime-main.js.map": "/Pipline-system/static/js/runtime-main.a7473a28.js.map",
+    "static/js/2.224141c1.chunk.js": "/Pipline-system/static/js/2.224141c1.chunk.js",
+    "static/js/2.224141c1.chunk.js.map": "/Pipline-system/static/js/2.224141c1.chunk.js.map",
+    "static/js/3.6ff98d77.chunk.js": "/Pipline-system/static/js/3.6ff98d77.chunk.js",
+    "static/js/3.6ff98d77.chunk.js.map": "/Pipline-system/static/js/3.6ff98d77.chunk.js.map",
+    "index.html": "/Pipline-system/index.html",
+    "static/css/main.d8b817e0.chunk.css.map": "/Pipline-system/static/css/main.d8b817e0.chunk.css.map",
+    "static/js/2.224141c1.chunk.js.LICENSE.txt": "/Pipline-system/static/js/2.224141c1.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a7473a28.js",
+    "static/js/2.224141c1.chunk.js",
+    "static/css/main.d8b817e0.chunk.css",
+    "static/js/main.3b04a12e.chunk.js"
+  ]
+}
